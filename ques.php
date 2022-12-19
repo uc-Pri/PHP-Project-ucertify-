@@ -1,3 +1,8 @@
+<?php
+define("fileName", "PHP_PROJECT");
+define("host_server", "localhost");
+?> 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,40 +25,28 @@
         content: attr(no);
     }
 </style>
-
 <body>
 
-
-    <nav class="navbar  bg-light border border-dark ">
+    <nav class="navbar border border-dark ">
         <a href="#" class="col-1 col-xs-4 navbar-brand"> <img
                 src="https://www.ucertify.com/layout/themes/bootstrap4/images/logo/ucertify_logo.png"
                 alt="uCertify Logo"></a>
         <h1 class=" col-xs-4 navbar-nav mx-auto">
-
-
             uCertify Prep Test</h1>
-
         </h1>
-
     </nav>
 
     <div class="box  float-left overflow-auto position-absolute w-25"
         style="height: calc(100vh - 72px); z-index: 1; display: none;">
         <div class="box-inner px-3 border bg-white border-dark ">
 
-            <nav aria-label="...">
-                <ul class="pagination">
-                    <li class="page-item" id="unatt">
-                        <a class="page-link border border-dark text-dark" href="#">Unattempted</a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link  text-light" href="#">All</a>
-                    </li>
-                    <li class="page-item ">
-                        <a class="page-link border border-dark px-3 text-dark" href="#" id="att">Attempted</a>
-                    </li>
-                </ul>
-            </nav>
+
+            <div class="mt-2 mb-2 btn-group">
+                <button class="btn btn-outline-warning" id="unattempted_filter">Unattempted</button>
+                <button class="btn btn-outline-primary" id="all_filter">All</button>
+                <button class="btn btn-outline-success" id="attempted_filter">Attempted</button>
+            </div>
+
 
         </div>
     </div>
@@ -61,9 +54,13 @@
 
     <div class="container mt-4">
 
-        <p id="ques"></p>
-        <form class="rad"></form>
-        <div class="badges mt-2"></div>
+        <div class="badges  mt-2 d-flex justify-content-center"></div>
+        <p id="question_items"></p>
+        <form class="radio_options"></form>
+        <div class="mt-2">
+            <h3 class="text-dark heading"></h3>
+            <small class="review text-wrap text-dark" id="exp"></small>
+            </div>
 
         <div class="modal " id="myModal">
             <div class="modal-dialog modal-dialog-centered">
@@ -77,16 +74,34 @@
 
                     <!-- Modal body -->
 
-
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-between">
+                        <p class="me-2 "><div>
+                        <span>Total items</span>
+                        <span class="d-flex justify-content-center text-primary" id="total_modal"></span>
+                        </div>
+                        </p>
+                        <p class="me-2 "><div>
+                        <span >Attempted</span>
+                        <span class="d-flex justify-content-center text-success" id="attempt_modal">0</span>
+                        </div>
+                        </p>
+                        <p class="me-2 "><div>
+                        <span>Unattempted</span>
+                        <span class="d-flex justify-content-center text-warning" id="unattempt_modal"></span>
+                        </div>
+                        </p>
+                        </div>
+                    </div>
 
                     <!-- Modal footer -->
                     <div class="modal-footer ">
-                        <button type="button" class="btn btn-outline-primary slide-toggle " data-bs-dismiss="modal">Go
+                        <button type="button" class="btn btn-primary slide-toggle " data-bs-dismiss="modal">Go
                             to
                             item list</button>
-                        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"> <a
-                                href="/PHP_PROJECT/result.php" class="text-decoration-none text-white">End
+                                href="/<?php echo fileName ?>/result.php" class="text-decoration-none text-white">End
                                 Test</a></button>
                     </div>
 
@@ -111,24 +126,12 @@
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"> <a
-                                href="/PHP_PROJECT/result.php" class="text-decoration-none text-white">End
+                                href="/<?php echo fileName ?>/result.php" class="text-decoration-none text-white">End
                                 Test</a></button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <?php
-        if (empty($_GET['test']) || $_GET['test'] = 0) {
-
-            echo '<div class="mt-2 p-3">
-            <h3 class="text-dark">Explanation</h3>
-            <small class="review text-wrap text-dark" id="exp"></small>
-            </div>';
-        }
-        ?>
-
-
 
         <footer class=" fixed-bottom mb-2 ">
             <div class=" d-flex justify-content-end ">
@@ -149,401 +152,301 @@
 
 
         <script>
-
-            function getFirstQues(first_quest, data) {
-                var val = first_quest + 1;
-                var n = JSON.parse(data[first_quest]['content_text']);
-                $('#ques').html(n['question']);
-                $('#ques').prepend(`<b>Q${val}: </b>`);
-                $("#page").text("0" + val).append(" of 11");
-                for (i = 0; i < 4; i++) {
-                    let ans_val = JSON.parse(data[first_quest]["content_text"]).answers[i].answer;
-                    $('.rad').append(`
-                                <div class="d-flex">
-                                    <input id="${i}ans" type="radio" class="form-check-input radio__" name="radios" value="${i}">
-                                    <label class="form-check-label ms-1" id="opt${i}">${ans_val}</label>
-                                </div>`);
-                }
-                $(".form-check-input").click(function () {
-                    sessionStorage.setItem("opt0", $(this).attr("value"));
-                });
-                itemValue = sessionStorage.getItem("opt0");
-                //   console.log(itemValue);
-                if (itemValue !== null) {
-                    $('input[value="' + itemValue + '"]').click();
-                }
-
-
-                $(".form-check-input").click(function () {
-                    $.post(
-                        "http://localhost/PHP_PROJECT/answer.php",
-                        {
-                            question: first_quest,
-                            answer: $(this).val(),
-                        },
-                        function (data) {
-                            // console.log(data);
-                            sessionStorage.setItem("result0", data);
-                            itemValue = sessionStorage.getItem("result0");
-                            // console.log(itemValue);
-                        }
-                    );
-                });
-            }
-
-            $(document).ready(function () {
-                //Jquery here...
-                var url = new URL(window.location.href);
-                var no = url.searchParams.get("no");
-                let first_quest = parseInt(no) - 1;
-                if (no == 1) {
+            
+             $(document).ready(function () {
+           // VARIABLES 
+            var question_index=1;
+            var url = new URL(window.location.href);
+            var no = url.searchParams.get("no");
+            question_index = parseInt(no);
+            if (no == 1) {
                     $("#prev").prop("disabled", true);
-
                 }
                 $.ajax(
                     {
-                        url: " http://localhost/PHP_PROJECT/file.json",
+                        url: ` http://<?php echo host_server ?>/<?php echo fileName ?>/file.json`,
                         type: "POST",
                         success: function (data) {
-
-                            getFirstQues(first_quest, data);
-
-
-
-                            qindex = 0;
-
-
-                            // getting list 
-                            for (j = 0; j < 11; j++) {
-                                optValue = sessionStorage.getItem("opt" + j);
-                                $('.box-inner').append(`<a href="/PHP_PROJECT/ques.php/?test=1&no=${j + 1}" id=${"list" + j} class="snipps text-decoration-none text-dark " ><b> Ques ${j + 1} </b> ${data[j]['snippet']}</a><br><span class="badge text-bg-warning mb-3 att${j}">Unattempted</span><br>`);
-                                if (optValue !== null) {
-                                    $(".att" + j).addClass("text-bg-success").text("attepmted").removeClass("text-bg-warning");
+                            
+                        function getQues(question_index, data) {
+                                // var val = question_index + 1;
+                                var n = JSON.parse(data[question_index-1]['content_text']);
+                                                $('#question_items').html(n['question']);
+                                                $('#question_items').prepend(`<b>Q${question_index}: </b>`);
+                                                $("#page").text(`0${question_index}`).append(` of ${data.length}`);
+                                            get_options(data);
+                                            storeValue(question_index,data);
                                 }
-                            }
 
-                            $(".review").html(JSON.parse(data[first_quest]["content_text"]).explanation);
+                                function get_options(data){
+                                var n = JSON.parse(data[question_index-1]['content_text']);
 
-                            $('#next').click(function () {
+                                    for (i = 0; i < n.answers.length ; i++) {
+                                                    var ans_val = n.answers[i].answer;
+                                                    $('.radio_options').append(`
+                                                    <div class="d-flex">
+                                                        <input id="${i}ans" type="radio" class="form-check-input radio_" name="radios" value="${i}">
+                                                        <label class="form-check-label ms-1" for="${i}ans" id="option${i}">${ans_val}</label>
+                                                    </div>`);
+                                            }
+                                }
 
-                                var url = new URL(window.location.href);
-                                var no = url.searchParams.get("no");
-                                var k = parseInt(no);
-                                k++;
-                                $('.rad').empty();
-                                qindex = qindex + 1;
-                                if (k <= data.length) {
-
-                                    if (k > data.length) {
-                                        k = data.length;
-                                    }
-                                    var new_url = `/PHP_PROJECT/ques.php/?test=1&no=${k}`;
-
-                                    window.history.pushState("data ", "Title ", new_url);
-                                    document.title = new_url;
-                                    $('#ques').text(JSON.parse(data[k - 1]['content_text'])['question']);
-                                    $('#ques').prepend(`<b>Q${k}: </b>`);
-
-
-
-                                    for (i = 0; i < 4; i++) {
-                                        $(".rad").append(
-
-                                            '<div class="form-check"><input type="radio" class="form-check-input" id="radio' +
-
-                                            (i + 1) +
-
-                                            '"name="radios" value="' +
-
-                                            i +
-
-                                            '"><label class= "answer form-check-label d-block" for= "' +
-
-
-
-                                            '">' +
-
-                                            JSON.parse(data[k - 1]["content_text"]).answers[i].answer +
-
-                                            "</label></div>"
-
-                                        );
-                                    }
-
-                                    $(".review").html(JSON.parse(data[k - 1]["content_text"]).explanation);
-
-                                    if (k < 10) {
-                                        $("#page").text("0" + k).append(" of 11 ");
-                                    }
-                                    else {
-                                        $("#page").text(k).append(" of 11 ");
-                                    }
-
-                                    if (k == data.length) {
-                                        $("#next").prop("disabled", true);
-                                    }
-                                    if (k > 0) {
-                                        $("#prev").prop("disabled", false);
-                                    }
+                                function storeValue(question_index,data){
                                     $(".form-check-input").click(function () {
+                                        sessionStorage.setItem(`option${question_index-1}`, $(this).attr("value"));
                                         $.post(
-                                            "http://localhost/PHP_PROJECT/answer.php",
+                                            "http://<?php echo host_server?>/<?php echo fileName?>/answer.php",
                                             {
-                                                question: k,
+                                                question: question_index-1,
                                                 answer: $(this).val(),
                                             },
                                             function (data) {
-                                                console.log(data);
-                                                sessionStorage.setItem("result" + qindex, data);
-                                                itemValue = sessionStorage.getItem("result" + qindex);
-                                                // console.log(itemValue);
+                                                sessionStorage.setItem(`result${question_index-1}`, data);
+                                                itemValue = sessionStorage.getItem(`result${question_index-1}`);
                                             }
                                         );
                                     });
-
-                                    $(".form-check-input").click(function () {
-
-                                        sessionStorage.setItem("opt" + qindex, $(this).attr("value"));
-                                    });
-                                    itemValue = sessionStorage.getItem("opt" + qindex);
-                                    if (itemValue !== null) {
-
-                                        $('input[value="' + itemValue + '"]').click();
+                                    itemValue = sessionStorage.getItem(`option${question_index-1}`);
+                                    if (itemValue !== null) 
+                                    {
+                                        $(`input[value="${itemValue}"]`).click();
                                     }
+                                }
+
+                                getQues(question_index, data);
+
+                                function newURL(){
+                                        var new_url = `/<?php echo fileName ?>/ques.php/?test=1&no=${question_index}`;
+
+                                         window.history.pushState("data ", "Title ", new_url);
+                                        // document.title = new_url;
+                                }
+
+                                function getItemNo(){
+                                    if (question_index > data.length) {
+                                                question_index = data.length;
+                                            }
+
+                                            if (question_index < 10) {
+                                                $("#page").text("0" + question_index).append(" of 11 ");
+                                            }
+                                            else {
+                                                $("#page").text(question_index).append(" of 11 ");
+                                            }
 
                                 }
-                            });
+                                function listSideBar(){
+                                    getItemNo();
+                                    for (list_index = 0; list_index < data.length; list_index++) {
+                                        optValue = sessionStorage.getItem("option" + list_index);
+                                        $('.box-inner').append(`<div class ="question_snippets">
+                                        <a href="/<?php echo fileName ?>/ques.php/?test=1&no=${list_index + 1}" id=${"list" + list_index} class="snipps text-decoration-none text-dark " ><b> Ques ${list_index + 1} </b> ${data[list_index]['snippet']}</a>
+                                        <br><span class="badge text-bg-warning mb-3 att${list_index}">Unattempted</span><br>
+                                        </div>`);
+                                        if (optValue !== null) {
+                                            $(".att" + list_index).addClass("text-bg-success").text("attepmted").removeClass("text-bg-warning");
+                                        }
+                                        listbadges(list_index);
+                                    }
+                                }
+
+                                listSideBar();
+                                listbadges(question_index);
+
+                                function listbadges(question_index) {
+                                $(".slide-toggle").click(function() {
+                                    optValue = sessionStorage.getItem("option" + question_index);
+                                    if (optValue !== null) {
+                                        $(".att" + question_index)
+                                        .addClass("text-bg-success")
+                                        .text("attepmted")
+                                        .removeClass("text-bg-warning");
+                                    }
+                                });
+                                }
+                                    
+                                $('#next').click(function () {
+                                    $(".box").hide();
+                                    $(".radio_options").empty();
+                                        question_index++;
+                                    if (question_index <= data.length) {
+                                        newURL();
+                                            getQues(question_index,data);
+
+                                            getItemNo();
+                                           
+                                            if (question_index == data.length) {
+                                                $("#next").prop("disabled", true);
+                                            }
+                                            if (question_index > 0) {
+                                                $("#prev").prop("disabled", false);
+                                            }
+                                    }
+                                });
 
                             $('#prev').click(function () {
-                                var url = new URL(window.location.href);
-                                var no = url.searchParams.get("no");
-                                var k = parseInt(no);
+                                $(".box").hide();
+                                $(".radio_options").empty();
+                            question_index--;
 
-                                k--;
-                                qindex = qindex - 1;
-                                if (k <= data.length) {
+                                if (question_index <= data.length) { 
+                                    newURL(); 
+                                    getQues(question_index, data); 
 
-                                    if (k > data.length) {
-                                        k = data.length;
-                                    }
-                                    var new_url = `/PHP_PROJECT/ques.php/?test=1&no=${k}`;
+                                    getItemNo();
 
-                                    window.history.pushState("data ", "Title ", new_url);
-                                    document.title = new_url;
-                                    $('#ques').text(JSON.parse(data[k - 1]['content_text'])['question']);
-                                    $('#ques').prepend(`<b>Q${k}: </b>`);
-
-                                    $('.rad').empty();
-
-                                    for (i = 0; i < 4; i++) {
-                                        $(".rad").append(
-
-                                            '<div class="form-check"><input type="radio" class="form-check-input" id="radio' +
-
-                                            (i + 1) +
-
-                                            '"name="radios" value="' +
-
-                                            i +
-
-                                            '"><label class= "answer form-check-label d-block" for= "' +
-
-
-
-                                            '">' +
-
-                                            JSON.parse(data[k - 1]["content_text"]).answers[i].answer +
-
-                                            "</label></div>"
-
-                                        );
-                                    }
-
-                                    $(".review").html(JSON.parse(data[k - 1]["content_text"]).explanation);
-
-                                    if (k < 10) {
-                                        $("#page").text("0" + k).append(" of 11 ");
-                                    }
-                                    else {
-                                        $("#page").text(k).append(" of 11 ");
-                                    }
-
-
-
-                                    if (k == 1) {
+                                    if (question_index == 1) {
                                         $("#prev").prop("disabled", true);
                                     }
-                                    if (k > 0) {
+                                    if (question_index > 0) {
                                         $("#next").prop("disabled", false);
                                     }
-                                    $(".form-check-input").click(function () {
-                                        $.post(
-                                            "http://localhost/PHP_PROJECT/answer.php",
-                                            {
-                                                question: k,
-                                                answer: $(this).val(),
-                                            },
-                                            function (data) {
-                                                console.log(data);
-                                                sessionStorage.setItem("result" + qindex, data);
-                                                itemValue = sessionStorage.getItem("result" + qindex);
-                                                console.log(itemValue);
-                                            }
-                                        );
-                                    });
-                                    $(".form-check-input").click(function () {
-                                        sessionStorage.setItem("opt" + qindex, $(this).attr("value"));
-                                    });
-                                    itemValue = sessionStorage.getItem("opt" + qindex);
-                                    // console.log(itemValue);
-                                    if (itemValue !== null) {
-                                        $('input[value="' + itemValue + '"]').click();
-                                    }
+                         
                                 }
                             });
 
-
-
-
+                        
                             $(".slide-toggle").click(function () {
                                 $(".box").toggle();
                             });
+                            $("#total_modal").text(data.length);
+                            $(".end-test").click(function() {
+                         var items = 0;
+                           for (i = 0; i < data.length; i++) {
+                          attempt_data = sessionStorage.getItem("option" + i);
+                        if (attempt_data) {
+                        items = items + 1;
+                           $("#attempt_modal").text(items);
+                     }
+                 }
+                $("#unattempt_modal").text(data.length - items);
+            });
 
 
+
+                            $("#all_filter").click(function () {
+                                $('.question_snippets').empty();
+                                listSideBar();
+                            });
+
+                            $("#attempted_filter").click(function() {
+                                $('.question_snippets').empty();
+                                for (list_index = 0; list_index < data.length; list_index++) {
+                                        optValue = sessionStorage.getItem("option" + list_index);
+                                if (optValue !== null) {
+                                    $('.box-inner').append(`<div class ="question_snippets">
+                                        <a href="/<?php echo fileName ?>/ques.php/?test=1&no=${list_index + 1}" id=${"list" + list_index} class="snipps text-decoration-none text-dark " ><b> Ques ${list_index + 1} </b> ${data[list_index]['snippet']}</a>
+                                        <br><span class="badge text-bg-success mb-3 att${list_index}">attempted</span><br>
+                                        </div>`);
+                                }
+                            }
+                            });
+                            $("#unattempted_filter").click(function() {
+                                $('.question_snippets').empty();
+                                for (list_index = 0; list_index < data.length; list_index++) {
+                                        optValue = sessionStorage.getItem("option" + list_index);
+                                if (optValue == null) {
+                                    $('.box-inner').append(`<div class ="question_snippets">
+                                        <a href="/<?php echo fileName ?>/ques.php/?test=1&no=${list_index + 1}" id=${"list" + list_index} class="snipps text-decoration-none text-dark " ><b> Ques ${list_index + 1} </b> ${data[list_index]['snippet']}</a>
+                                        <br><span class="badge text-bg-warning mb-3 att${list_index}">unattempted</span><br>
+                                        </div>`);
+                                }
+                            }
+                            });
+                            
+
+                            var mins = 30;
+                            const parameter = new URL(location.href).searchParams;
+                            const test = parameter.get('test');
+                            if (test == 1) {
+                                function startTimer(duration, display) {
+                                    var start = Date.now(),
+                                    diff,
+                                    minutes,
+                                    seconds;
+                                    function timer() {
+                                        
+                                        diff = duration - (((Date.now() - start) / 1000) | 0);
+                                        minutes = (diff / 60) | 0;
+                                        seconds = diff % 60 | 0;
+                                        minutes = minutes < 10 ? "0" + minutes : minutes;
+                                        seconds = seconds < 10 ? "0" + seconds : seconds;
+                                        display.textContent = minutes + "m" +" : " + seconds+"s";
+                                        if (diff <= 0) {
+                                            window.location = `/<?php echo fileName ?>/result.php`;
+                                        }
+                                    }
+                                    timer();
+                                    setInterval(timer, 1000);
+                                }
+                                var testTime = 60 * mins,
+                                    display = document.querySelector("#timer");
+                                startTimer(testTime, display);
+
+                            }
 
 
                             const params = new URL(location.href).searchParams;
                             const review = params.get('review');
                             if (review == 1) {
 
-                                var index = 0;
-
-                                $(".form-check-input").attr("disabled", true);
-
-                                if (sessionStorage.getItem("result" + index) == 1) {
-                                    $(".badges").append(
-                                        '<span class="badge text-bg-success">Correct</span>'
-                                    );
-                                } else if (sessionStorage.getItem("result" + index) == 0) {
-                                    $(".badges").append(
-                                        '<span class="badge text-bg-danger">incorrect</span>'
-                                    );
-                                } else {
-                                    $(".badges").append(
-                                        '<span class="badge text-bg-warning">Unattempted</span>'
-                                    );
-                                }
-
-
-                                $("#timer").remove();
-                                $(".end-test").text("Go back").removeClass("btn-danger").addClass("btn-primary").removeAttr("data-bs-target").attr("onclick", "location.href='/PHP_PROJECT/result.php'");
-
-                                $("#next").click(function () {
-
-                                    index = index + 1;
-                                    $(".badges").empty();
-                                    $(".form-check-input").attr("disabled", true);
-                                    var url = new URL(window.location.href);
-                                    var no = url.searchParams.get("no");
-                                    var k = parseInt(no) - 1;
-                                    k++;
-                                    var new_url = `/PHP_PROJECT/ques.php/?review=1&no=${k}`;
+                                var index = 1;
+                                function reviewPageUrl(){
+                                    var new_url = `/<?php echo fileName ?>/ques.php/?review=1&no=${question_index}`;
 
                                     window.history.pushState("data ", "Title ", new_url);
-                                    document.title = new_url;
-
-                                    if (no < 10) {
-                                        $("#page").text("0" + no).append(" of 11 ");
-                                    }
-                                    else {
-                                        $("#page").text(no).append(" of 11 ");
-                                    }
-
+                                }
+                                function reviewPage(no, data){
+                                    $(".badges").empty();
                                     $(".form-check-input").attr("disabled", true);
 
-                                    if (sessionStorage.getItem("result" + index) == 1) {
+                                    $(".review").html(JSON.parse(data[no-1]["content_text"]).explanation);
+                                    $(".heading").text("Explanation");
+
+                                    if (sessionStorage.getItem("result" + (no-1)) == 1) {
                                         $(".badges").append(
-                                            '<span class="badge text-bg-success">Correct</span>'
-                                        );
-                                    } else if (sessionStorage.getItem("result" + index) == 0) {
+                                            '<div class="alert alert-success" role="alert">Correct</div>'
+                                        )
+
+                                    } else if (sessionStorage.getItem("result" + (no-1)) == 0) {
                                         $(".badges").append(
-                                            '<span class="badge text-bg-danger">incorrect</span>'
-                                        );
+                                            '<div class="alert alert-danger" role="alert">incorrect</div>'
+                                        )
                                     } else {
                                         $(".badges").append(
-                                            '<span class="badge text-bg-warning">Unattempted</span>'
-                                        );
+                                            '<div class="alert alert-warning" role="alert">Unattempted</div>'
+                                        )
                                     }
+                                }
+                                
+                                reviewPage(no,data);
 
+                                $(".end-test").text("Go back").removeClass("btn-danger").addClass("btn-primary").removeAttr("data-bs-target").attr("onclick", `location.href='/<?php echo fileName?>/result.php'`);
+                                
+
+                                $("#next").click(function () {
+                                    index++;
+                                    reviewPageUrl();
+                                    getItemNo();
+                                    reviewPage(index,data);
 
                                 })
                                 $("#prev").click(function () {
-                                    index = index - 1;
-                                    $(".badges").empty();
-                                    $(".form-check-input").attr("disabled", true);
-                                    var url = new URL(window.location.href);
-                                    var no = url.searchParams.get("no");
-                                    var k = parseInt(no);
-                                    var new_url = `/PHP_PROJECT/ques.php/?review=1&no=${k}`;
-                                    k--;
-
-                                    window.history.pushState("data ", "Title ", new_url);
-                                    document.title = new_url;
-
-                                    $(".form-check-input").attr("disabled", true);
-
-                                    if (sessionStorage.getItem("result" + index) == 1) {
-                                        $(".badges").append(
-                                            '<span class="badge text-bg-success">Correct</span>'
-                                        );
-                                    } else if (sessionStorage.getItem("result" + index) == 0) {
-                                        $(".badges").append(
-                                            '<span class="badge text-bg-danger">incorrect</span>'
-                                        );
-                                    } else {
-                                        $(".badges").append(
-                                            '<span class="badge text-bg-warning">Unattempted</span>'
-                                        );
-                                    }
+                                    index --;
+                                    reviewPageUrl();
+                                    getItemNo();
+                                    reviewPage(index,data);
+                                  
                                 })
 
                                 for (li = 0; li < 11; li++) {
                                     $(`#list${li}`).attr("href", `?review=1&no=${li + 1}`)
                                 }
+                               
+                            
 
                             }
 
-
-
-
-
-                            function startTimer(duration, display) {
-                                var time = duration;
-                                setInterval(function () {
-                                    minutes = parseInt(time / 60, 10);
-                                    seconds = parseInt(time % 60, 10);
-
-                                    minutes = minutes < 10 ? "0" + minutes : minutes;
-                                    seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                                    display.text(minutes + "m" + ":" + seconds + "s");
-
-                                    if (time <= 0) {
-                                        $('#timeout').modal('show');
-                                        // window.location.replace("result.html");
-
-                                    }
-                                    else {
-                                        time--;
-                                    }
-                                }, 1000);
-                            }
-
-                            jQuery(function () {
-                                var thirtymins = 60 * 30; // set timer
-                                display = $('#timer');
-                                startTimer(thirtymins, display);
-                            });
                         }
                     });
             });
