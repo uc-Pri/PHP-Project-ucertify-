@@ -153,13 +153,13 @@ define("host_server", "localhost");
 
         <script>
             
-             $(document).ready(function () {
+            $(document).ready(function () {
            // VARIABLES 
-            var question_index=1;
-            var url = new URL(window.location.href);
-            var no = url.searchParams.get("no");
-            question_index = parseInt(no);
-            if (no == 1) {
+                var question_index=1;
+                var url = new URL(window.location.href);
+                var no = url.searchParams.get("no");
+                question_index = parseInt(no);
+                if (no == 1) {
                     $("#prev").prop("disabled", true);
                 }
                 $.ajax(
@@ -217,9 +217,7 @@ define("host_server", "localhost");
 
                                 function newURL(){
                                         var new_url = `/<?php echo fileName ?>/ques.php/?test=1&no=${question_index}`;
-
-                                         window.history.pushState("data ", "Title ", new_url);
-                                        // document.title = new_url;
+                                        window.history.pushState("data ", "Title ", new_url);
                                 }
 
                                 function getItemNo(){
@@ -272,9 +270,7 @@ define("host_server", "localhost");
                                     if (question_index <= data.length) {
                                         newURL();
                                             getQues(question_index,data);
-
                                             getItemNo();
-                                           
                                             if (question_index == data.length) {
                                                 $("#next").prop("disabled", true);
                                             }
@@ -292,7 +288,6 @@ define("host_server", "localhost");
                                 if (question_index <= data.length) { 
                                     newURL(); 
                                     getQues(question_index, data); 
-
                                     getItemNo();
 
                                     if (question_index == 1) {
@@ -311,16 +306,16 @@ define("host_server", "localhost");
                             });
                             $("#total_modal").text(data.length);
                             $(".end-test").click(function() {
-                         var items = 0;
+                            var items = 0;
                            for (i = 0; i < data.length; i++) {
-                          attempt_data = sessionStorage.getItem("option" + i);
-                        if (attempt_data) {
-                        items = items + 1;
-                           $("#attempt_modal").text(items);
-                     }
-                 }
-                $("#unattempt_modal").text(data.length - items);
-            });
+                            attempt_data = sessionStorage.getItem("option" + i);
+                            if (attempt_data) {
+                            items = items + 1;
+                            $("#attempt_modal").text(items);
+                        }
+                    }
+                    $("#unattempt_modal").text(data.length - items);
+                });
 
 
 
@@ -354,41 +349,51 @@ define("host_server", "localhost");
                             }
                             });
                             
-
-                            var mins = 30;
                             const parameter = new URL(location.href).searchParams;
                             const test = parameter.get('test');
                             if (test == 1) {
-                                function startTimer(duration, display) {
-                                    var start = Date.now(),
-                                    diff,
-                                    minutes,
-                                    seconds;
-                                    function timer() {
-                                        
-                                        diff = duration - (((Date.now() - start) / 1000) | 0);
-                                        minutes = (diff / 60) | 0;
-                                        seconds = diff % 60 | 0;
-                                        minutes = minutes < 10 ? "0" + minutes : minutes;
-                                        seconds = seconds < 10 ? "0" + seconds : seconds;
-                                        display.textContent = minutes + "m" +" : " + seconds+"s";
-                                        if (diff <= 0) {
-                                            window.location = `/<?php echo fileName ?>/result.php`;
-                                        }
+                                function startTimer() {
+                                 // Set the timer to 30 minutes (in milliseconds)
+                                    var timer = 30 * 60 * 1000;
+
+                                    // Get the current time from session storage, if it exists
+                                    var currentTime = sessionStorage.getItem('currentTime');
+                                    if (currentTime) {
+                                        timer = currentTime;
                                     }
-                                    timer();
-                                    setInterval(timer, 1000);
+
+                                    // Update the timer every 1000 milliseconds (1 second)
+                                    var interval = setInterval(function() {
+                                        timer -= 1000;
+
+                                        // Update the current time in session storage
+                                        sessionStorage.setItem('currentTime', timer);
+
+                                        // Convert the timer value to minutes and seconds
+                                        var minutes = Math.floor(timer / (60 * 1000));
+                                        var seconds = Math.floor((timer % (60 * 1000)) / 1000);
+
+                                        // Display the timer value on the page
+                                        document.getElementById('timer').innerHTML = minutes + ':' + seconds;
+
+                                        // If the timer has reached 0, clear the interval and reset the timer
+                                        if (timer <= 0) {
+                                        clearInterval(interval);
+                                        sessionStorage.removeItem('currentTime');
+                                        window.location = `/<?php echo fileName ?>/result.php`;
+                                        }
+                                    }, 1000);
                                 }
-                                var testTime = 60 * mins,
-                                    display = document.querySelector("#timer");
-                                startTimer(testTime, display);
 
+                                // Start the timer when the page loads
+                                window.onload = startTimer();
                             }
-
 
                             const params = new URL(location.href).searchParams;
                             const review = params.get('review');
                             if (review == 1) {
+
+                               
 
                                 var index = 1;
                                 function reviewPageUrl(){
@@ -400,6 +405,17 @@ define("host_server", "localhost");
                                     $(".badges").empty();
                                     $(".form-check-input").attr("disabled", true);
 
+                                    const id_num= (sessionStorage.getItem("option" + (no-1)));
+                                    $(`#option${id_num}`).addClass('text-danger');
+                                    var an= JSON.parse(data[no-1]["content_text"]).answers;
+                                    for(var l=0 ;l<an.length;l++)
+                                    {
+                                        if(an[l]['is_correct']==1){
+                                            $("#option"+l).removeClass('text-danger');
+                                            $("#option"+l).addClass('text-success');
+                                        }
+                                    }
+
                                     $(".review").html(JSON.parse(data[no-1]["content_text"]).explanation);
                                     $(".heading").text("Explanation");
 
@@ -407,10 +423,9 @@ define("host_server", "localhost");
                                         $(".badges").append(
                                             '<div class="alert alert-success" role="alert">Correct</div>'
                                         )
-
-                                    } else if (sessionStorage.getItem("result" + (no-1)) == 0) {
-                                        $(".badges").append(
-                                            '<div class="alert alert-danger" role="alert">incorrect</div>'
+                                } else if (sessionStorage.getItem("result" + (no-1)) == 0) {
+                                    $(".badges").append(
+                                        '<div class="alert alert-danger" role="alert">incorrect</div>'
                                         )
                                     } else {
                                         $(".badges").append(
@@ -418,6 +433,7 @@ define("host_server", "localhost");
                                         )
                                     }
                                 }
+                             
                                 
                                 reviewPage(no,data);
 
@@ -438,8 +454,7 @@ define("host_server", "localhost");
                                     reviewPage(index,data);
                                   
                                 })
-
-                                for (li = 0; li < 11; li++) {
+                                for (li = 0; li <data.length ; li++) {
                                     $(`#list${li}`).attr("href", `?review=1&no=${li + 1}`)
                                 }
                                

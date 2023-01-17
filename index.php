@@ -20,10 +20,11 @@
     </nav>
 
     <div class="d-flex align-items-center justify-content-center" style="height: 500px;">
-        <button type="button" class="btn btn-light border border-dark px-4 font-weight-bold "> <a
-                class="text-decoration-none text-dark" href="ques.php/?test=1&no=1">
-                Start
-                Test</a></button>
+        <button type="button" class="btn btn-light border border-dark px-4 font-weight-bold ">
+            <a class="text-decoration-none text-dark" href="ques.php/?test=1&no=1">
+                StartTest
+            </a>
+        </button>
     </div>
 
 </body>
