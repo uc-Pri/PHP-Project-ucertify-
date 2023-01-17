@@ -2,10 +2,8 @@
 define("fileName", "PHP_PROJECT");
 define("host_server", "localhost");
 ?> 
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,10 +13,8 @@ define("host_server", "localhost");
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.5.1.js">
     </script>
-
 </head>
 <style>
     #exp seq:before {
@@ -26,7 +22,6 @@ define("host_server", "localhost");
     }
 </style>
 <body>
-
     <nav class="navbar border border-dark ">
         <a href="#" class="col-1 col-xs-4 navbar-brand"> <img
                 src="https://www.ucertify.com/layout/themes/bootstrap4/images/logo/ucertify_logo.png"
@@ -35,23 +30,16 @@ define("host_server", "localhost");
             uCertify Prep Test</h1>
         </h1>
     </nav>
-
     <div class="box  float-left overflow-auto position-absolute w-25"
         style="height: calc(100vh - 72px); z-index: 1; display: none;">
         <div class="box-inner px-3 border bg-white border-dark ">
-
-
             <div class="mt-2 mb-2 btn-group">
                 <button class="btn btn-outline-warning" id="unattempted_filter">Unattempted</button>
                 <button class="btn btn-outline-primary" id="all_filter">All</button>
                 <button class="btn btn-outline-success" id="attempted_filter">Attempted</button>
             </div>
-
-
         </div>
     </div>
-
-
     <div class="container mt-4">
 
         <div class="badges  mt-2 d-flex justify-content-center"></div>
