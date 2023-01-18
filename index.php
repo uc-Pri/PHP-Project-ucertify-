@@ -9,7 +9,6 @@
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
 <body>
-
     <nav class="navbar border border-dark ">
         <a href="#" class="col-1 col-xs-4 navbar-brand"> <img
                 src="https://www.ucertify.com/layout/themes/bootstrap4/images/logo/ucertify_logo.png"
@@ -18,7 +17,6 @@
             uCertify Prep Test</h1>
         </h1>
     </nav>
-
     <div class="d-flex align-items-center justify-content-center" style="height: 500px;">
         <button type="button" class="btn btn-light border border-dark px-4 font-weight-bold ">
             <a class="text-decoration-none text-dark" href="ques.php/?test=1&no=1">
@@ -26,6 +24,5 @@
             </a>
         </button>
     </div>
-
 </body>
 </html>

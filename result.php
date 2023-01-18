@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,33 +26,27 @@
             background: #808080;
             color: #fff;
         }
-
         table,
         th,
         td {
             border: 1px solid black;
             border-collapse: collapse;
         }
-
         /* setting the text-align property to center*/
         td {
             padding: 5px;
             text-align: center;
         }
     </style>
-
 </head>
 <title>Document</title>
 </head>
-
 <body>
     <nav class="navbar  bg-outline-dark border border-dark ">
-        <a href="#" class="col-1 col-xs-4 navbar-brand"> <img
-                src="https://www.ucertify.com/layout/themes/bootstrap4/images/logo/ucertify_logo.png"
-                alt="uCertify Logo"></a>
-        <h1 class=" col-xs-4 navbar-nav mx-auto">
-            Result</h1>
-        </h1>
+        <a href="#" class="col-1 col-xs-4 navbar-brand">
+            <img src="https://www.ucertify.com/layout/themes/bootstrap4/images/logo/ucertify_logo.png" alt="uCertify Logo">
+        </a>
+        <h1 class=" col-xs-4 navbar-nav mx-auto">Result</h1>
     </nav>
     <div class="mt-5 mb-5 ">
         <div class="d-flex justify-content-center">
@@ -68,26 +61,27 @@
                 <span class="d-none d-md-inline-block">
                     Result
                 </span>
-
             </button>
             <button class="btn btn-outline- me-2 px-2 px-md-4">
                 <div>
-                    <span class=" text-primary "><i class="fa-solid fa-list"></i></span>
+                    <span class=" text-primary ">
+                        <i class="fa-solid fa-list"></i>
+                    </span>
                     <span class="d-inline-block text-primary items"></span>
                 </div>
                 <span class="d-none d-md-inline-block">Items</span>
             </button>
-
             <button class="btn btn-outline- me-2 px-2 px-md-4">
                 <div>
-                    <span class=" text-success"><i class="fa-solid fa-check"></i></span>
+                    <span class=" text-success">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
                     <span class="d-inline-block text-success correct">0</span>
                 </div>
                 <span class="d-none d-md-inline-block">
                     Correct
                 </span>
             </button>
-
             <button class="btn btn-outline- me-2 px-2 px-md-4">
                 <div>
                     <span class=" text-danger"><i class="fa-sharp fa-solid fa-xmark"></i></span>
@@ -99,7 +93,9 @@
             </button>
             <button class="btn btn-outline- me-2 px-2 px-md-4">
                 <div>
-                    <span class="text-warning"><i class="fa-sharp fa-solid fa-eye-slash"></i></span>
+                    <span class="text-warning">
+                        <i class="fa-sharp fa-solid fa-eye-slash"></i>
+                    </span>
                     <span class="d-inline-block text-warning unat"></span>
                 </div>
                 <span class="d-none d-md-inline-block">
@@ -108,57 +104,45 @@
             </button>
         </div>
     </div>
-
     <div class="container mt-5">
         <div class="table-responsive">
             <table class="table table-striped table-hover" id="table">
-
-                <tbody>
-
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
-
-
     <script>
         $(document).ready(function () {
-
             // FETCHING DATA FROM JSON FILE
             $.getJSON("file.json",
                 function (data) {
                     var tb = '';
-
                     // ITERATING THROUGH OBJECTS
                     $.each(data, function (key, value) {
-
                         //CONSTRUCTION OF ROWS HAVING
                         // DATA FROM JSON OBJECT
                         tb += `<tr>`;
                         tb += `<td class="align-middle position-relative">
-                        <div class="d-flex justify-content-center">
-                        <div class="circle d-inline-block float-left"> ${key + 1}
-                        </div>
-                        </div>
+                            <div class="d-flex justify-content-center">
+                                <div class="circle d-inline-block float-left"> ${key + 1}</div>
+                            </div>
                         </td>`
                         tb += `<td>
-                        <div class="d-flex justify-content-center">
-                        <a href="ques.php/?review=1&no=${key + 1}" class=" review_page text-decoration-none text-dark ">  ${value.snippet} </a>
-                        </div>
+                            <div class="d-flex justify-content-center">
+                                <a href="ques.php/?review=1&no=${key + 1}" class=" review_page text-decoration-none text-dark ">${value.snippet}</a>
+                            </div>
                         </td>`;
-
                         tb += `<td class="text-center align-middle">
-                        <div class="d-flex justify-content-center">
-                        <div class="circle corr_incorr" id="${key}0">A</div>
-                        <div class="circle corr_incorr"id="${key}1">B</div>
-                        <div class="circle corr_incorr" id="${key}2"> C</div>
-                        <div class="circle corr_incorr" id="${key}3">D</div>
-                        </div>
+                            <div class="d-flex justify-content-center">
+                                <div class="circle corr_incorr" id="${key}0">A</div>
+                                <div class="circle corr_incorr"id="${key}1">B</div>
+                                <div class="circle corr_incorr" id="${key}2"> C</div>
+                                <div class="circle corr_incorr" id="${key}3">D</div>
+                            </div>
                         </td>`;
-                        tb += `<td class="output${key}"></td>`;
-                        tb += '</tr>';
+                        tb +=`<td class="output${key}"></td>`;
+                        tb +='</tr>';
                     });
-
                     //INSERTING ROWS INTO TABLE 
                     $('#table').append(tb);
                     var total = 0;
@@ -166,35 +150,23 @@
                     var Unattempted_count = 0;
                     var data_index = 0;
                     var n = JSON.parse(data[data_index]['content_text']);
-
-
                     for (loop = 0; loop < data.length; loop++) {
-
-
-
                         output = sessionStorage.getItem("option" + loop);
                         check_result = sessionStorage.getItem("result" + loop);
-
                         if (output !== null) {
                             $(".output" + loop).append("attempted").addClass("bg-success").css("color", "white");
-                        } else {
+                        } 
+                        else {
                             $(".output" + loop).append("unattempted").addClass("bg-warning").css("color", "white");
                         }
-
-
                         if (check_result == 1) {
                             total++;
-
                             $('.correct').text(total);
                         }
                         if (check_result == 0) {
                             Incorrect_count++;
-
-                            
-
                             $('.incorrect').text(Incorrect_count);
                         }
-
                         if ($('.output' + loop).text() == 'unattempted') {
                             Unattempted_count++;
                         }
@@ -204,9 +176,7 @@
                         $('.result').text(
                             (parseFloat(total / ( data.length) * (100)).toFixed(2) + "%")
                         );
-
-                       
-                            for (i = 0; i < n.answers.length ; i++) {
+                        for (i = 0; i < n.answers.length ; i++) {
                                 if (JSON.parse(data[loop]["content_text"]).answers[i]['is_correct'] == '1' && JSON.parse(data[loop]["content_text"]).answers[i]['is_correct'] !== '0') {
                                     $(`#${loop}${i}`).addClass('bg-success');
                                 }
@@ -218,9 +188,5 @@
                 });
         });
     </script>
-
-
-
 </body>
-
 </html>
